@@ -14,10 +14,13 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { ChangeColorMode } from '../components/ChangeColorMode'
 import { Logo } from '../components/Logo'
+import router from "next/router";
 
-const Home: NextPage = () => {
+const Login: NextPage = () => {
   const bgPage = useColorModeValue('gray.200', 'gray.800')
   const bgLogin = useColorModeValue('gray.100', 'gray.900')
+
+  const toHome = () => router.push('/home')
 
   return (
     <>
@@ -75,6 +78,7 @@ const Home: NextPage = () => {
                 color={'gray.200'}
                 bgColor={'cyan.500'}
                 _hover={{bg: 'cyan.700'}}
+                onClick={toHome}
                 >Entrar</Button>
               </Box>
 
@@ -86,4 +90,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default Login
