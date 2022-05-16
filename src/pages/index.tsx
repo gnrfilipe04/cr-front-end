@@ -15,12 +15,32 @@ import Head from 'next/head'
 import { ChangeColorMode } from '../components/ChangeColorMode'
 import { Logo } from '../components/Logo'
 import router from "next/router";
+import { useEffect, useState } from 'react'
+import api from '../services/api'
 
 const Login: NextPage = () => {
   const bgPage = useColorModeValue('gray.200', 'gray.800')
   const bgLogin = useColorModeValue('gray.100', 'gray.900')
 
+  const [user, setUser] = useState('')
+  const [password, setPassword] = useState('')
+
   const toHome = () => router.push('/home')
+
+  const accountInvalid = () => {
+    alert('Usuário inválido')
+  }
+
+  const handleLogin = (user: string, password: string) => {
+    api.post('accounts/authenticate', {
+      email: user,
+	    password: password
+    })
+    .then(response => {
+      response.status === 202 ? toHome() : accountInvalid()
+    })
+    .catch(accountInvalid)
+  }
 
   return (
     <>
@@ -57,17 +77,21 @@ const Login: NextPage = () => {
                 borderColor={'gray.200'}
                 _hover={{ borderColor: 'cyan.300' }}
                 focusBorderColor={'cyan.500'}
+                value={user}
+                onChange={e => setUser(e.target.value)}
                 />
               </Box>
               
               <Box>
-                <FormLabel htmlFor='email' color={'secondary'}>Senha</FormLabel>
+                <FormLabel htmlFor='password' color={'secondary'}>Senha</FormLabel>
                 <Input 
-                id='email' 
-                type='email'
+                id='password' 
+                type='password'
                 borderColor={'gray.200'}
                 _hover={{ borderColor: 'cyan.300' }}
                 focusBorderColor={'cyan.500'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 />
               </Box>
 
@@ -78,7 +102,7 @@ const Login: NextPage = () => {
                 color={'gray.200'}
                 bgColor={'cyan.500'}
                 _hover={{bg: 'cyan.700'}}
-                onClick={toHome}
+                onClick={() => handleLogin(user, password)}
                 >Entrar</Button>
               </Box>
 

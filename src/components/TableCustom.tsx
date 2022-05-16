@@ -10,14 +10,10 @@ import {
     TableCaption,
     TableContainer,
   } from '@chakra-ui/react'
-
-
 interface TableCustomProps<T> {
     ths: string[];
     data: T[]
 }
-
-
 
 function TableCustom<T>({
     ths,

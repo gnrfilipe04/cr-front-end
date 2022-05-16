@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react"
-import { IAccountDTO } from "../dtos/IAccountDTO"
+import { IAccountDTO } from "../../dtos/IAccountDTO"
 import { DeleteIcon } from '@chakra-ui/icons'
 import Head from 'next/head'
-import { ChangeColorMode } from '../components/ChangeColorMode'
 import type { NextPage } from 'next'
-import { Logo } from '../components/Logo'
+import { Logo } from '../../components/Logo'
+import { ChangeColorMode } from "../../components/ChangeColorMode"
+import api from "../../services/api"
+import { AxiosResponse } from "axios"
 
 import {
   Table,
@@ -25,26 +27,7 @@ import {
 
 const Home: NextPage = () => {
 
-    const [users, setUsers] = useState<IAccountDTO[]>([
-        {
-            id: '1',
-            fistName: 'José',
-            secondName: 'Anntônio',
-            phone: '519998877665',
-            birthDate: new Date(),
-            adress: 'Rua Alternativa Alberta',
-            email: 'jose.antonio@email.com',
-        },
-        {
-            id: '2',
-            fistName: 'Roberto',
-            secondName: 'Claudio',
-            phone: '519998877665',
-            birthDate: new Date(),
-            adress: 'Rua Julio de Castilhos',
-            email: 'roberto.claudio@email.com',
-        }
-    ])
+    const [users, setUsers] = useState<IAccountDTO[]>([])
 
     const [usersSelected, setUsersSelected] = useState<IAccountDTO[]>([])
     const [allUsers, setAllUsers] = useState(false)
@@ -66,9 +49,19 @@ const Home: NextPage = () => {
         
     }
 
+    const getUsers = async () => {
+        const users: AxiosResponse<IAccountDTO[]> = await api.get('contacts')
+        setUsers(users.data)
+    }
+
     useEffect(() => {
         allUsers ? setUsersSelected(users) : setUsersSelected([])
+
     }, [allUsers])
+
+    useEffect(() => {
+        getUsers()
+    }, [])
 
     return (
        <>
@@ -124,7 +117,7 @@ const Home: NextPage = () => {
                                     </Td>
                                     <Td>{user.fistName}</Td>
                                     <Td>{user.email}</Td>
-                                    <Td>{user.birthDate.toLocaleDateString('pt-br')}</Td>
+                                    <Td>{String(user.birthDate)}</Td>
                                     <Td>
                                         <DeleteIcon color='error' cursor={'pointer'}/>
                                     </Td>
